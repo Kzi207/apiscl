@@ -1,3 +1,8 @@
+<?php
+session_start();
+$isLoggedIn = isset($_SESSION['user_id']);
+$userName = $_SESSION['user_name'] ?? '';
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -342,6 +347,18 @@
 <body>
     <div class="container">
         <div class="header">
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 20px; gap: 10px;">
+                <?php if ($isLoggedIn): ?>
+                    <a href="dashboard.php" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);">
+                        <i class="fas fa-user"></i> <?php echo htmlspecialchars($userName); ?>
+                    </a>
+                <?php else: ?>
+                    <a href="login.php" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+                        <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                    </a>
+                <?php endif; ?>
+            </div>
+            
             <h1><i class="fas fa-music"></i> SoundCloud Downloader API</h1>
             <p class="subtitle">Tìm kiếm và tải xuống bài hát từ SoundCloud một cách dễ dàng</p>
         </div>
@@ -385,82 +402,109 @@
             </div>
         </div>
         
-        <div class="guide-section">
-            <h3><i class="fas fa-book"></i> Hướng dẫn sử dụng</h3>
-            
-            <div class="guide-step">
-                <h4><i class="fas fa-mouse-pointer"></i> Bước 1: Tìm kiếm bài hát</h4>
-                <p>Nhập tên bài hát, nghệ sĩ hoặc từ khóa vào ô tìm kiếm. Bạn có thể tìm kiếm bằng tiếng Việt hoặc tiếng Anh. Ví dụ: "Shape of You", "Đen Vâu", "EDM"</p>
-            </div>
-            
-            <div class="guide-step">
-                <h4><i class="fas fa-headphones"></i> Bước 2: Nghe thử</h4>
-                <p>Sau khi tìm thấy bài hát, bạn có thể nghe thử bằng audio player. Điều này giúp bạn xác nhận đúng bài hát muốn tải xuống.</p>
-            </div>
-            
-            <div class="guide-step">
-                <h4><i class="fas fa-download"></i> Bước 3: Tải xuống</h4>
-                <p>Nhấn nút "Tải xuống MP3" để tải file về máy. File sẽ được tải xuống với tên tự động dựa trên tên bài hát và nghệ sĩ.</p>
-            </div>
-            
-            <div class="guide-step">
-                <h4><i class="fas fa-info-circle"></i> Bước 4: Thông tin chi tiết</h4>
-                <p>Nhấn "Thông tin chi tiết" để xem thêm thông tin về bài hát như thời lượng, khả năng tải xuống, và link gốc trên SoundCloud.</p>
-            </div>
-        </div>
-        
         <div class="api-info">
             <h3><i class="fas fa-code"></i> API Endpoints cho Developers</h3>
-            <p style="margin-bottom: 20px; color: #666;">Sử dụng các endpoint sau để tích hợp vào ứng dụng của bạn:</p>
+            <p style="margin-bottom: 15px; color: #666;">Sử dụng các endpoint sau để tích hợp vào ứng dụng của bạn:</p>
             
-            <div class="api-endpoint">
-                GET /api.php?action=search&query=tên_bài_hát
-                <div class="endpoint-description">Tìm kiếm bài hát theo từ khóa và trả về thông tin bài hát đầu tiên</div>
+            <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #ffc107;">
+                <strong><i class="fas fa-key"></i> Yêu cầu API Key:</strong> 
+                Tất cả các request <strong>BẮT BUỘC</strong> phải có API key để sử dụng.
+                <a href="pricing.php" style="color: #667eea; text-decoration: underline; font-weight: 600; margin-left: 10px;">
+                    <i class="fas fa-shopping-cart"></i> Mua API key ngay
+                </a>
             </div>
             
-            <div class="api-endpoint">
-                GET /api.php?action=download&track_id=ID_TRACK
-                <div class="endpoint-description">Tải xuống file MP3 trực tiếp từ SoundCloud</div>
-            </div>
-            
-            <div class="api-endpoint">
-                GET /api.php?action=multiple&query=tên_bài_hát&limit=5
-                <div class="endpoint-description">Tìm kiếm nhiều bài hát cùng lúc (mặc định limit=5)</div>
-            </div>
-            
-            <div class="api-endpoint">
-                GET /api.php?action=info&track_id=ID_TRACK
-                <div class="endpoint-description">Lấy thông tin chi tiết của một bài hát cụ thể</div>
-            </div>
-            
-            <div class="api-endpoint">
-                GET /api.php?action=search&query=tên_bài_hát&play
-                <div class="endpoint-description">Tìm kiếm và phát trực tiếp bài hát trên web player</div>
-            </div>
-            
-            <div class="api-endpoint">
-                GET /api.php?action=play&query=tên_bài_hát
-                <div class="endpoint-description">Phát trực tiếp bài hát trên web player (tương tự search&play)</div>
+            <div style="background: #e3f2fd; padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #1976d2;">
+                <h4 style="color: #1976d2; margin-bottom: 15px;"><i class="fas fa-book-open"></i> Hướng dẫn Call API</h4>
+                
+                <div style="margin-bottom: 20px;">
+                    <strong style="color: #333;">Phương thức 1: Query Parameter</strong>
+                    <code style="background: white; padding: 10px; border-radius: 5px; display: block; margin-top: 8px; word-break: break-all; color: #333;">
+                        GET /api.php?action=search&query=tên_bài_hát&api_key=YOUR_API_KEY
+                    </code>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <strong style="color: #333;">Phương thức 2: HTTP Header</strong>
+                    <code style="background: white; padding: 10px; border-radius: 5px; display: block; margin-top: 8px; word-break: break-all; color: #333;">
+                        Header: X-API-Key: YOUR_API_KEY
+                    </code>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <strong style="color: #333;">Ví dụ với cURL:</strong>
+                    <code style="background: #263238; padding: 15px; border-radius: 5px; display: block; margin-top: 8px; word-break: break-all; color: #aed581; font-size: 0.9em;">
+curl -X GET "http://localhost/apiscl/api.php?action=search&query=test&api_key=kzi_abc123..."
+                    </code>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <strong style="color: #333;">Ví dụ với JavaScript (Fetch):</strong>
+                    <code style="background: #263238; padding: 15px; border-radius: 5px; display: block; margin-top: 8px; word-break: break-all; color: #aed581; font-size: 0.9em; white-space: pre-wrap;">fetch('http://localhost/apiscl/api.php?action=search&query=test', {
+  headers: {
+    'X-API-Key': 'kzi_abc123...'
+  }
+})
+.then(response => response.json())
+.then(data => console.log(data));</code>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <strong style="color: #333;">Ví dụ với PHP:</strong>
+                    <code style="background: #263238; padding: 15px; border-radius: 5px; display: block; margin-top: 8px; word-break: break-all; color: #aed581; font-size: 0.9em; white-space: pre-wrap;">$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, 'http://localhost/apiscl/api.php?action=search&query=test');
+curl_setopt($ch, CURLOPT_HTTPHEADER, ['X-API-Key: kzi_abc123...']);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+$data = json_decode($response, true);</code>
+                </div>
+                
+                <div>
+                    <strong style="color: #333;">Ví dụ với Python:</strong>
+                    <code style="background: #263238; padding: 15px; border-radius: 5px; display: block; margin-top: 8px; word-break: break-all; color: #aed581; font-size: 0.9em; white-space: pre-wrap;">import requests
+
+headers = {'X-API-Key': 'kzi_abc123...'}
+response = requests.get(
+    'http://localhost/apiscl/api.php?action=search&query=test',
+    headers=headers
+)
+data = response.json()</code>
+                </div>
             </div>
             
             <div style="background: white; padding: 20px; border-radius: 10px; margin-top: 20px; border-left: 4px solid #7b1fa2;">
-                <h4 style="color: #7b1fa2; margin-bottom: 10px;"><i class="fas fa-lightbulb"></i> Ví dụ sử dụng:</h4>
+                <h4 style="color: #7b1fa2; margin-bottom: 10px;"><i class="fas fa-lightbulb"></i> Ví dụ sử dụng với API Key:</h4>
                 <p style="color: #666; margin-bottom: 10px;">Tìm kiếm bài hát "Shape of You":</p>
                 <code style="background: #f8f9fa; padding: 10px; border-radius: 5px; display: block; word-break: break-all; margin-bottom: 10px;">
-                    http://localhost/apiscl/api.php?action=search&query=Shape%20of%20You
+                    http://localhost/apiscl/api.php?action=search&query=Shape%20of%20You&api_key=kzi_abc123...
                 </code>
                 <p style="color: #666; margin-bottom: 10px;">Phát trực tiếp bài hát:</p>
-                <code style="background: #f8f9fa; padding: 10px; border-radius: 5px; display: block; word-break: break-all;">
-                    http://localhost/apiscl/api.php?action=search&query=Shape%20of%20You&play
+                <code style="background: #f8f9fa; padding: 10px; border-radius: 5px; display: block; word-break: break-all; margin-bottom: 10px;">
+                    http://localhost/apiscl/api.php?action=search&query=Shape%20of%20You&play&api_key=kzi_abc123...
                 </code>
+                <p style="color: #666; margin-bottom: 10px;">Tải xuống MP3:</p>
+                <code style="background: #f8f9fa; padding: 10px; border-radius: 5px; display: block; word-break: break-all;">
+                    http://localhost/apiscl/api.php?action=download&track_id=498655485&api_key=kzi_abc123...
+                </code>
+            </div>
+            
+            <div style="background: #fff3cd; padding: 20px; border-radius: 10px; margin-top: 20px; border-left: 4px solid #ff9800;">
+                <h4 style="color: #e65100; margin-bottom: 10px;"><i class="fas fa-exclamation-circle"></i> Lưu ý quan trọng:</h4>
+                <ul style="margin-left: 20px; color: #666; line-height: 1.8;">
+                    <li>Mọi request đều <strong>BẮT BUỘC</strong> phải có API key</li>
+                    <li>Không có API key sẽ nhận lỗi <code style="background: #f8f9fa; padding: 3px 6px; border-radius: 3px;">401 Unauthorized</code></li>
+                    <li>Mỗi API key có giới hạn số lượng requests</li>
+                    <li>Vượt quá giới hạn sẽ nhận lỗi <code style="background: #f8f9fa; padding: 3px 6px; border-radius: 3px;">429 Too Many Requests</code></li>
+                    <li>API key bị vô hiệu hóa sẽ nhận lỗi <code style="background: #f8f9fa; padding: 3px 6px; border-radius: 3px;">403 Forbidden</code></li>
+                </ul>
             </div>
         </div>
         
         <div class="credit-section">
             <div style="text-align: center; padding: 30px; background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%); color: white; border-radius: 15px; margin-top: 30px;">
                 <h3 style="margin-bottom: 15px; color: #ecf0f1;"><i class="fas fa-heart"></i> Credits</h3>
-                <p style="margin-bottom: 10px; font-size: 1.1em;">Developed with ❤️ by <strong>SoundCloud Downloader Team</strong></p>
-                <p style="margin-bottom: 15px; color: #bdc3c7;">Powered by SoundCloud API v2</p>
+                <p style="margin-bottom: 10px; font-size: 1.1em;">Developed with ❤️ by <strong>Khánh Duy</strong></p>
+                <p style="margin-bottom: 15px; color: #bdc3c7;">Powered by Khánh Duy</p>
                 <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <i class="fas fa-code"></i>
@@ -471,12 +515,12 @@
                         <span>SoundCloud API</span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 8px;">
-                        <i class="fas fa-palette"></i>
-                        <span>Font Awesome</span>
+                        <i class="fab fa-github"></i>
+                        <span><a href="https://github.com/kzi207" style="color: white; text-decoration: none;">GitHub</a></span>
                     </div>
                 </div>
                 <p style="margin-top: 15px; font-size: 0.9em; color: #95a5a6;">
-                    © 2024 SoundCloud Downloader API. All rights reserved.
+                    © 2024 SoundCloud Downloader API by Khánh Duy. All rights reserved.
                 </p>
             </div>
         </div>

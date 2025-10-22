@@ -1,0 +1,58 @@
+[
+    {
+        "key": "sk_b4cab45c8617adc3360a2ad310fe5ddcb67a530358499ef0",
+        "name": "hi",
+        "created_at": "2025-10-22 09:36:22",
+        "request_limit": 1,
+        "request_count": 1,
+        "status": "active",
+        "last_used": "2025-10-22 09:38:25"
+    },
+    {
+        "key": "sk_cfe324c5907ea79c4616fa58ac7a865e8733777fc729b9e6",
+        "name": "Kh\u00e1nh Duy - G\u00f3i Starter",
+        "created_at": "2025-10-22 09:56:40",
+        "request_limit": 100,
+        "request_count": 0,
+        "status": "active",
+        "last_used": null,
+        "email": "demo@example.com",
+        "order_id": "KDE9E857",
+        "limit_type": "daily",
+        "daily_reset_at": "2025-10-22"
+    },
+    {
+        "key": "kzi_a69f1605acea36019ba87f5b96cdf0b8c5c1bd86aaca945f",
+        "name": "Kh\u00e1nh Duy - G\u00f3i Starter",
+        "created_at": "2025-10-22 10:07:24",
+        "request_limit": 100,
+        "request_count": 1,
+        "status": "active",
+        "last_used": "2025-10-22 10:08:52",
+        "email": "admin@kzii.site",
+        "order_id": "KD4B9E41",
+        "limit_type": "daily",
+        "daily_reset_at": "2025-10-22"
+    },
+    {
+        "key": "kzi_47b0d7fe4d49d01c329a910a2f6fc7c96838cbaa194aab7f",
+        "name": "hi",
+        "created_at": "2025-10-22 10:09:14",
+        "request_limit": 1,
+        "request_count": 0,
+        "status": "active",
+        "last_used": null
+    },
+    {
+        "key": "kzi_5c8b69f1489d4740a512b5dee3f104ec99361835bed55971",
+        "name": "Kh\u00e1nh Duy - G\u00f3i Free",
+        "created_at": "2025-10-22 10:11:23",
+        "request_limit": 10,
+        "request_count": 0,
+        "status": "active",
+        "last_used": null,
+        "email": "admin@kzii.site",
+        "order_id": "KDEC22C6",
+        "limit_type": "daily"
+    }
+]

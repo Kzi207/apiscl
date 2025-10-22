@@ -210,9 +210,9 @@ class SoundCloudDownloader {
             'credits' => [
                 'api' => 'SoundCloud Downloader API',
                 'version' => '1.0.0',
-                'developer' => 'SoundCloud Downloader Team',
-                'powered_by' => 'SoundCloud API v2',
-                'github' => 'https://github.com/soundcloud-downloader/api'
+                'developer' => 'Khánh Duy',
+                'powered_by' => 'Khánh Duy',
+                'github' => 'https://github.com/kzi207'
             ]
         ];
     }

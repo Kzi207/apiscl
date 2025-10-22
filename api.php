@@ -3,16 +3,97 @@
 
 require_once 'config.php';
 require_once 'SoundCloudDownloader.php';
+require_once 'db_config.php';
 
 class SoundCloudAPI {
     private $downloader;
+    private $requireApiKey = true; // LUÔN yêu cầu API key
     
     public function __construct() {
         $clientId = SOUNDCLOUD_CLIENT_ID;
         $this->downloader = new SoundCloudDownloader($clientId);
     }
     
+    /**
+     * Kiểm tra API key
+     */
+    private function validateApiKey() {
+        // LUÔN yêu cầu API key
+        $apiKey = $_GET['api_key'] ?? $_SERVER['HTTP_X_API_KEY'] ?? '';
+        
+        if (empty($apiKey)) {
+            return ['error' => 'Thiếu API key. Vui lòng thêm tham số api_key hoặc header X-API-Key', 'code' => 401];
+        }
+        
+        // Lấy key từ database
+        $keyData = getApiKeyByValue($apiKey);
+        
+        if (!$keyData) {
+            return ['error' => 'API key không hợp lệ', 'code' => 401];
+        }
+        
+        if ($keyData['status'] !== 'active') {
+            return ['error' => 'API key đã bị vô hiệu hóa', 'code' => 403];
+        }
+        
+        // Kiểm tra limit type (daily hoặc monthly)
+        $limitType = $keyData['limit_type'];
+        $today = date('Y-m-d');
+        
+        if ($limitType === 'daily') {
+            // Reset count nếu sang ngày mới
+            $lastUsedDate = $keyData['daily_reset_at'] ?? '';
+            if ($lastUsedDate !== $today) {
+                // Database sẽ tự động reset trong updateApiKeyUsage
+            }
+        }
+        
+        // Kiểm tra giới hạn (sau khi reset nếu cần)
+        $currentKey = getApiKeyByValue($apiKey); // Lấy lại sau reset
+        
+        if ($currentKey['request_count'] >= $currentKey['request_limit']) {
+            $limitText = $limitType === 'daily' ? 'requests/ngày' : 'requests/tháng';
+            return ['error' => 'API key đã vượt quá giới hạn ' . $currentKey['request_limit'] . ' ' . $limitText, 'code' => 429];
+        }
+        
+        // Tăng số lượng request trong database
+        updateApiKeyUsage($apiKey);
+        
+        // Log request (optional)
+        try {
+            $action = $_GET['action'] ?? '';
+            $query = $_GET['query'] ?? null;
+            $trackId = $_GET['track_id'] ?? null;
+            logApiRequest($apiKey, $action, $query, $trackId);
+        } catch (Exception $e) {
+            // Bỏ qua lỗi log
+        }
+        
+        return true;
+    }
+    
     public function handleRequest() {
+        // Bỏ qua kiểm tra API key nếu request từ website (referer check)
+        $referer = $_SERVER['HTTP_REFERER'] ?? '';
+        $host = $_SERVER['HTTP_HOST'] ?? '';
+        
+        // Kiểm tra xem request có từ chính website này không
+        $isFromWebsite = (
+            strpos($referer, 'index.php') !== false || 
+            strpos($referer, $host . '/apiscl/') !== false ||
+            strpos($referer, $host . '/apiscl') !== false ||
+            strpos($referer, 'localhost/apiscl') !== false
+        );
+        
+        // Chỉ kiểm tra API key nếu không phải từ website
+        if (!$isFromWebsite) {
+            $keyValidation = $this->validateApiKey();
+            if (is_array($keyValidation) && isset($keyValidation['error'])) {
+                http_response_code($keyValidation['code'] ?? 403);
+                return $keyValidation;
+            }
+        }
+        
         $action = $_GET['action'] ?? '';
         $query = $_GET['query'] ?? '';
         $trackId = $_GET['track_id'] ?? '';
