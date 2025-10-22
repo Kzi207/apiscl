@@ -3,7 +3,7 @@
 
 // Thông tin Sepay
 define('SEPAY_API_URL', 'https://my.sepay.vn/userapi/transactions/list');
-define('SEPAY_TOKEN', 'WMBKYPC7AYILXXZROQZ5LDCQLAUIHIJZ0U1JDR1KXDLH7U3OGQFEC5O9N2HNMMOK'); // Thay bằng token thực của bạn
+define('SEPAY_TOKEN', ''); // Thay bằng token thực của bạn
 define('SEPAY_ACCOUNT_NUMBER', '0939042183'); // Số tài khoản MB Bank
 
 // Hàm kiểm tra giao dịch từ Sepay
